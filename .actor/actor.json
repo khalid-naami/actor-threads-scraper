@@ -1,0 +1,25 @@
+{
+    "actorSpecification": 1,
+    "name": "threads-ultimate-scraper",
+    "title": "Threads Ultimate Scraper (Profiles, Posts, Replies, Likes & Search)",
+    "description": "Comprehensive all-in-one Threads (Meta) scraper without login. Extracts Profiles, Follower counts, Posts with text & media (Images, MP4 Videos), Replies, Engagement metrics (Likes, Reposts, Quotes), and Keyword Search.",
+    "version": "1.0.0",
+    "meta": {
+        "templateId": "js-crawlee-playwright"
+    },
+    "dockerfile": "./Dockerfile",
+    "input": "./input_schema.json",
+    "storages": {
+        "dataset": "./dataset_schema.json"
+    },
+    "output": "./output_schema.json",
+    "categories": [
+        "SOCIAL_MEDIA",
+        "LEAD_GENERATION",
+        "MARKETING",
+        "CONTENT"
+    ],
+    "environmentVariables": {
+        "APIFY_DISABLE_BROWSER_SANDBOX": "1"
+    }
+}
