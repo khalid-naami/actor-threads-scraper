@@ -1,0 +1,72 @@
+{
+    "title": "Threads Ultimate Scraper Input Schema",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "mode": {
+            "title": "Scraping Mode",
+            "type": "string",
+            "description": "Select Threads data extraction mode, or use AUTO_DETECT.",
+            "default": "AUTO_DETECT",
+            "editor": "select",
+            "enum": [
+                "AUTO_DETECT",
+                "PROFILES",
+                "POSTS",
+                "REPLIES",
+                "SEARCH"
+            ],
+            "enumTitles": [
+                "Auto-Detect (From URLs)",
+                "Creator Profiles & Leads (Bio, Followers, Verified & Posts)",
+                "Specific Posts (Text, Likes, Reposts & Media)",
+                "Thread Replies & Conversations",
+                "Search Keywords (Discover Trending Threads)"
+            ]
+        },
+        "targetUrls": {
+            "title": "Target Threads URLs",
+            "type": "array",
+            "description": "List of Threads profile URLs (threads.net/@username) or post URLs.",
+            "editor": "stringList",
+            "prefill": [
+                "https://www.threads.net/@zuck"
+            ]
+        },
+        "searchKeywords": {
+            "title": "Search Keywords / Topics",
+            "type": "array",
+            "description": "Keywords or hashtags to search across Threads.",
+            "editor": "stringList",
+            "prefill": [
+                "artificial intelligence"
+            ]
+        },
+        "maxPosts": {
+            "title": "Maximum Posts Per Profile",
+            "type": "integer",
+            "description": "Maximum number of posts to extract per creator profile.",
+            "default": 30,
+            "minimum": 1,
+            "maximum": 2000
+        },
+        "maxReplies": {
+            "title": "Maximum Replies Per Post",
+            "type": "integer",
+            "description": "Maximum number of replies to extract per thread post.",
+            "default": 20,
+            "minimum": 0,
+            "maximum": 1000
+        },
+        "proxyConfiguration": {
+            "title": "Proxy Configuration",
+            "type": "object",
+            "description": "Select Apify Proxy (RESIDENTIAL recommended to avoid Meta rate limits).",
+            "editor": "proxy",
+            "default": {
+                "useApifyProxy": true
+            }
+        }
+    },
+    "required": []
+}
