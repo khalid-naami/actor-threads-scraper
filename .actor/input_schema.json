@@ -27,10 +27,10 @@
         "targetUrls": {
             "title": "Target Threads URLs",
             "type": "array",
-            "description": "List of Threads profile URLs (threads.net/@username) or post URLs.",
+            "description": "List of Threads profile URLs (threads.com/@username or threads.net/@username) or post URLs.",
             "editor": "stringList",
             "prefill": [
-                "https://www.threads.net/@zuck"
+                "https://www.threads.com/@zuck"
             ]
         },
         "searchKeywords": {
@@ -43,9 +43,9 @@
             ]
         },
         "maxPosts": {
-            "title": "Maximum Posts Per Profile",
+            "title": "Maximum Posts Per Target",
             "type": "integer",
-            "description": "Maximum number of posts to extract per creator profile.",
+            "description": "Maximum number of posts to extract per creator profile or search keyword.",
             "default": 30,
             "minimum": 1,
             "maximum": 2000
@@ -61,7 +61,7 @@
         "proxyConfiguration": {
             "title": "Proxy Configuration",
             "type": "object",
-            "description": "Select Apify Proxy (RESIDENTIAL recommended to avoid Meta rate limits).",
+            "description": "Select Apify Proxy or No proxy (RESIDENTIAL recommended if datacenter IPs hit Meta rate limits).",
             "editor": "proxy",
             "default": {
                 "useApifyProxy": true
