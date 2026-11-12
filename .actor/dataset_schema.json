@@ -1,7 +1,9 @@
 {
     "actorSpecification": 1,
     "fields": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
+        "additionalProperties": true,
         "properties": {
             "type": {
                 "type": "string",
@@ -13,7 +15,7 @@
             },
             "id": {
                 "type": "string",
-                "title": "Post ID or Username"
+                "title": "Post ID or Profile ID"
             },
             "username": {
                 "type": "string",
@@ -51,6 +53,10 @@
                 "type": "string",
                 "title": "Post Shortcode"
             },
+            "parentPostCode": {
+                "type": "string",
+                "title": "Parent Post Shortcode"
+            },
             "text": {
                 "type": "string",
                 "title": "Post / Thread Text"
@@ -67,17 +73,30 @@
                 "type": "integer",
                 "title": "Reposts Count"
             },
+            "quoteCount": {
+                "type": "integer",
+                "title": "Quotes Count"
+            },
+            "reshareCount": {
+                "type": "integer",
+                "title": "Reshares Count"
+            },
             "mediaType": {
                 "type": "string",
                 "title": "Media Type (text, image, video, carousel)"
             },
             "imageUrls": {
                 "type": "array",
-                "title": "Images List"
+                "title": "Images List",
+                "items": { "type": "string" }
             },
             "videoUrl": {
                 "type": "string",
                 "title": "Direct MP4 Video Stream URL"
+            },
+            "replies": {
+                "type": "array",
+                "title": "Extracted Replies"
             },
             "replyText": {
                 "type": "string",
@@ -89,19 +108,29 @@
             },
             "email": {
                 "type": "string",
-                "title": "Contact Email"
+                "title": "Primary Contact Email"
             },
             "emails": {
                 "type": "array",
-                "title": "Extracted Emails"
+                "title": "Extracted Emails",
+                "items": { "type": "string" }
+            },
+            "phone": {
+                "type": "string",
+                "title": "Primary Contact Phone"
             },
             "phones": {
                 "type": "array",
-                "title": "Extracted Phones"
+                "title": "Extracted Phones",
+                "items": { "type": "string" }
             },
             "searchQuery": {
                 "type": "string",
                 "title": "Search Keyword"
+            },
+            "source": {
+                "type": "string",
+                "title": "Extraction Source Engine"
             },
             "publishedAt": {
                 "type": "string",
@@ -110,6 +139,40 @@
             "scrapedAt": {
                 "type": "string",
                 "title": "Scraped At Timestamp"
+            }
+        }
+    },
+    "views": {
+        "overview": {
+            "title": "Overview",
+            "transformation": {
+                "fields": [
+                    "type",
+                    "username",
+                    "displayName",
+                    "text",
+                    "likesCount",
+                    "replyCount",
+                    "repostCount",
+                    "mediaType",
+                    "url",
+                    "publishedAt"
+                ]
+            },
+            "display": {
+                "component": "table",
+                "properties": {
+                    "type": { "label": "Type", "format": "text" },
+                    "username": { "label": "Username", "format": "text" },
+                    "displayName": { "label": "Name", "format": "text" },
+                    "text": { "label": "Text", "format": "text" },
+                    "likesCount": { "label": "Likes", "format": "number" },
+                    "replyCount": { "label": "Replies", "format": "number" },
+                    "repostCount": { "label": "Reposts", "format": "number" },
+                    "mediaType": { "label": "Media", "format": "text" },
+                    "url": { "label": "URL", "format": "link" },
+                    "publishedAt": { "label": "Published", "format": "date" }
+                }
             }
         }
     }
