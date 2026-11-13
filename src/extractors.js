@@ -49,7 +49,9 @@ export function decodeHtmlEntities(str) {
 
 export function parseSafeInt(value, fallback = 0) {
     if (value === null || value === undefined || value === '') return fallback;
-    const num = Number(value);
+    const cleaned = typeof value === 'string' ? value.replace(/,/g, '').trim() : value;
+    if (cleaned === '') return fallback;
+    const num = Number(cleaned);
     return Number.isFinite(num) ? Math.trunc(num) : fallback;
 }
 
@@ -287,6 +289,9 @@ export function parsePostObject(postObj, fallbackUrl = '', ogMeta = {}) {
 
     const emails = extractEmails(text);
     const phones = extractPhones(text);
+    const displayName = postObj?.user?.full_name
+        ? String(postObj.user.full_name).trim()
+        : (author || undefined);
 
     return sanitizeRecord({
         type: 'POST',
@@ -294,6 +299,7 @@ export function parsePostObject(postObj, fallbackUrl = '', ogMeta = {}) {
         postCode,
         url: resolvedUrl,
         username: author ? `@${author}` : undefined,
+        displayName,
         text,
         likesCount,
         replyCount,
@@ -534,6 +540,7 @@ export function parsePostAndRepliesHtml(html, url, options = {}) {
                 parentPostCode: resolvedRootCode,
                 url: parsed.url,
                 username: parsed.username,
+                displayName: parsed.displayName,
                 replyAuthor: parsed.username,
                 replyText: parsed.text,
                 text: parsed.text,
