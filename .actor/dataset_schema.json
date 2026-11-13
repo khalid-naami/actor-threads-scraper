@@ -88,7 +88,9 @@
             "imageUrls": {
                 "type": "array",
                 "title": "Images List",
-                "items": { "type": "string" }
+                "items": {
+                    "type": "string"
+                }
             },
             "videoUrl": {
                 "type": "string",
@@ -96,7 +98,12 @@
             },
             "replies": {
                 "type": "array",
-                "title": "Extracted Replies"
+                "title": "Extracted Replies",
+                "items": {
+                    "type": "object",
+                    "required": [],
+                    "additionalProperties": true
+                }
             },
             "replyText": {
                 "type": "string",
@@ -113,7 +120,9 @@
             "emails": {
                 "type": "array",
                 "title": "Extracted Emails",
-                "items": { "type": "string" }
+                "items": {
+                    "type": "string"
+                }
             },
             "phone": {
                 "type": "string",
@@ -122,7 +131,9 @@
             "phones": {
                 "type": "array",
                 "title": "Extracted Phones",
-                "items": { "type": "string" }
+                "items": {
+                    "type": "string"
+                }
             },
             "searchQuery": {
                 "type": "string",
@@ -140,7 +151,8 @@
                 "type": "string",
                 "title": "Scraped At Timestamp"
             }
-        }
+        },
+        "required": []
     },
     "views": {
         "overview": {
@@ -162,16 +174,46 @@
             "display": {
                 "component": "table",
                 "properties": {
-                    "type": { "label": "Type", "format": "text" },
-                    "username": { "label": "Username", "format": "text" },
-                    "displayName": { "label": "Name", "format": "text" },
-                    "text": { "label": "Text", "format": "text" },
-                    "likesCount": { "label": "Likes", "format": "number" },
-                    "replyCount": { "label": "Replies", "format": "number" },
-                    "repostCount": { "label": "Reposts", "format": "number" },
-                    "mediaType": { "label": "Media", "format": "text" },
-                    "url": { "label": "URL", "format": "link" },
-                    "publishedAt": { "label": "Published", "format": "date" }
+                    "type": {
+                        "label": "Type",
+                        "format": "text"
+                    },
+                    "username": {
+                        "label": "Username",
+                        "format": "text"
+                    },
+                    "displayName": {
+                        "label": "Name",
+                        "format": "text"
+                    },
+                    "text": {
+                        "label": "Text",
+                        "format": "text"
+                    },
+                    "likesCount": {
+                        "label": "Likes",
+                        "format": "number"
+                    },
+                    "replyCount": {
+                        "label": "Replies",
+                        "format": "number"
+                    },
+                    "repostCount": {
+                        "label": "Reposts",
+                        "format": "number"
+                    },
+                    "mediaType": {
+                        "label": "Media",
+                        "format": "text"
+                    },
+                    "url": {
+                        "label": "URL",
+                        "format": "link"
+                    },
+                    "publishedAt": {
+                        "label": "Published",
+                        "format": "date"
+                    }
                 }
             }
         }
