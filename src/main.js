@@ -15,6 +15,11 @@ import {
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+function isProxyTransportError(errOrStatus) {
+    const msg = String(errOrStatus?.message || errOrStatus || '');
+    return errOrStatus === 597 || errOrStatus === 407 || /597|UPSTREAM407|407|Proxy responded with|tunneling socket/i.test(msg);
+}
+
 await Actor.init();
 
 const diagnostics = [];
@@ -67,8 +72,13 @@ try {
         : [];
 
     if (rawTargets.length === 0 && keywordsQueue.length === 0) {
-        rawTargets = ['https://www.threads.com/@zuck'];
-        log.info('ℹ️ No inputs provided. Defaulting to sample Threads target:', { urls: rawTargets });
+        if (mode === 'SEARCH') {
+            keywordsQueue.push('artificial intelligence');
+            log.info('ℹ️ No inputs provided in SEARCH mode. Defaulting to sample Threads search keyword:', { keywords: keywordsQueue });
+        } else {
+            rawTargets = ['https://www.threads.com/@zuck'];
+            log.info('ℹ️ No inputs provided. Defaulting to sample Threads target:', { urls: rawTargets });
+        }
     }
 
     const stats = {
@@ -95,23 +105,41 @@ try {
 
         for (let attempt = 0; attempt < maxAttempts; attempt++) {
             const proxyUrl = await getProxyUrl();
-            const res = await gotScraping({
-                url,
-                headerGeneratorOptions: {
-                    browsers: [{ name: 'chrome', minVersion: 124 }],
-                    operatingSystems: ['windows', 'macos']
-                },
-                headers: {
-                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-                    'Accept-Language': 'en-US,en;q=0.9',
-                    'Upgrade-Insecure-Requests': '1'
-                },
-                proxyUrl,
-                responseType: 'text',
-                throwHttpErrors: false,
-                timeout: { request: 25000 },
-                retry: { limit: 0 }
-            });
+            let res;
+            try {
+                res = await gotScraping({
+                    url,
+                    headerGeneratorOptions: {
+                        browsers: [{ name: 'chrome', minVersion: 124 }],
+                        operatingSystems: ['windows', 'macos']
+                    },
+                    headers: {
+                        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+                        'Accept-Language': 'en-US,en;q=0.9',
+                        'Upgrade-Insecure-Requests': '1'
+                    },
+                    proxyUrl,
+                    responseType: 'text',
+                    throwHttpErrors: false,
+                    timeout: { request: 25000 },
+                    retry: { limit: 0 }
+                });
+            } catch (err) {
+                lastFailure = { ok: false, reason: err.message };
+                if (proxyUrl && isProxyTransportError(err)) {
+                    log.warning(`⚠️ Proxy transport error (${err.message}); disabling broken proxy and retrying direct...`);
+                    proxyConfig = undefined;
+                    continue;
+                }
+                if (attempt + 1 < maxAttempts) continue;
+                break;
+            }
+
+            if (proxyUrl && (isProxyTransportError(res.statusCode) || isProxyTransportError(res.body))) {
+                log.warning(`⚠️ Proxy returned HTTP ${res.statusCode}; disabling broken proxy and retrying direct...`);
+                proxyConfig = undefined;
+                continue;
+            }
 
             if (res.statusCode === 429 && attempt + 1 < maxAttempts) {
                 log.warning('⏳ Rate-limited (HTTP 429) by Threads. Rotating proxy and waiting 3s...');
@@ -155,6 +183,7 @@ try {
             await requestQueue.addRequest({ url: targetUrl });
 
             const crawler = new PlaywrightCrawler({
+                maxConcurrency: 1,
                 requestQueue,
                 proxyConfiguration: proxyConfig,
                 maxRequestRetries: proxyConfig ? 2 : 0,
